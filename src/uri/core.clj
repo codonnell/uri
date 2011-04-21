@@ -1,8 +1,9 @@
 (ns uri.core
+  (:refer-clojure :exclude [resolve])
   (:import (java.net URI)))
 
 (defn uri
-  "Constructs a uri from the given components."
+  "Constructs a uri from the given components. See the java.net.URI doc."
   ([#^String str-uri]
    (URI. str-uri))
   ([#^String scheme #^String ssp #^String fragment]
@@ -15,72 +16,114 @@
   ([#^String scheme #^String authority #^String path #^String query #^String fragment]
    (URI. scheme authority path query fragment)))
 
-(defn absolute? [#^URI uri]
+(defn absolute?
+  "Tells whether or not the URI is absolute." 
+  [#^URI uri]
   (.isAbsolute uri))
 
-(defn opaque? [#^URI uri]
+(defn opaque? 
+  "Tells whether or not the URI is absolute."
+  [#^URI uri]
   (.isOpaque uri))
 
-(defn normalize [#^URI uri]
+(defn normalize 
+  "Normalizes the URI's path. See the java.net.URI docs."
+  [#^URI uri]
   (.normalize uri))
 
-(defn relativize [#^URI uri]
-  (.relativize uri))
+(defn relativize 
+  "Relativizes the base URI against the relative URI."
+  [#^URI base #^URI rel]
+  (.relativize base given))
 
-(defmulti resolve class)
-(defmethod resolve URI [uri]
-  (.resolve uri))
-(defmethod resolve String [str-uri]
-  (.resolve (uri str-uri)))
+(defn resolve 
+  "Resolves the given URI against the relative URI. Also takes a string as the
+  second argument."
+  [#^URI base rel]
+  (.resolve base given))
 
-(defn parse-user-auth [#^URI uri]
-  (.parseUserAuthority uri))
+(defn parse-server-authority 
+  "Attempts to parse the URI's authority component, if defined, into
+  user-information, host, and port components."
+  [#^URI uri]
+  (.parseServerAuthority uri))
 
-(defn url [#^URI uri]
+(defn url 
+  "Constructs a URL from the URI."
+  [#^URI uri]
   (.toURL uri))
 
-(defn authority [#^URI uri]
+(defn authority 
+  "Returns the decoded authority component of the URI."
+  [#^URI uri]
   (.getAuthority uri))
 
-(defn fragment [#^URI uri]
+(defn fragment 
+  "Returns the decoded fragment component of the URI."
+  [#^URI uri]
   (.getFragment uri))
 
-(defn host [#^URI uri]
+(defn host 
+  "Returns the host component of the URI."
+  [#^URI uri]
   (.getHost uri))
 
-(defn path [#^URI uri]
+(defn path 
+  "Returns the given path component of the URI."
+  [#^URI uri]
   (.getPath uri))
 
-(defn port [#^URI uri]
+(defn port 
+  "Returns the port number of the URI."
+  [#^URI uri]
   (.getPort uri))
 
-(defn query [#^URI uri]
+(defn query 
+  "Returns the decoded query component of the URI."
+  [#^URI uri]
   (.getQuery uri))
 
-(defn scheme [#^URI uri]
+(defn scheme 
+  "Returns the scheme component of the URI."
+  [#^URI uri]
   (.getScheme uri))
 
-(defn ssp [#^URI uri]
+(defn ssp 
+  "Returns the scheme-specific part of the URI."
+  [#^URI uri]
   (.getSchemeSpecificPart uri))
 
-(defn user-info [#^URI uri]
+(defn user-info 
+  "Returns the decoded user-information component of the URI."
+  [#^URI uri]
   (.getUserInfo uri))
 
-(defn raw-authority [#^URI uri]
+(defn raw-authority 
+  "Returns the raw authority component of the URI."
+  [#^URI uri]
   (.getRawAuthority uri))
 
-(defn raw-fragment [#^URI uri]
+(defn raw-fragment 
+  "Returns the raw fragment of the URI."
+  [#^URI uri]
   (.getRawFragment uri))
 
-(defn raw-path [#^URI uri]
+(defn raw-path 
+  "Returns the raw path component of the URI."
+  [#^URI uri]
   (.getRawPath uri))
 
-(defn raw-query [#^URI uri]
+(defn raw-query 
+  "Returns the raw query component of the URI."
+  [#^URI uri]
   (.getRawQuery uri))
 
-(defn raw-ssp [#^URI uri]
+(defn raw-ssp 
+  "Returns the raw scheme-specific part of the URI."
+  [#^URI uri]
   (.getRawSchemeSpecificPart uri))
 
-(defn raw-user-info [#^URI uri]
+(defn raw-user-info 
+  "Returns the raw user-information part of the URI."
+  [#^URI uri]
   (.getRawUserInfo uri))
-
