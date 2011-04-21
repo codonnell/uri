@@ -15,6 +15,28 @@ empty.
 
     => (uri "http" "clojure.github.com" "/clojure/clojure.core.api.html"
     "clojure.core/defmulti")
+    #<URI http://clojure.github.com/clojure/clojure.core.api.html#clojure.core/defmulti>
+
+You can get individual attributes from URIs:
+
+    => (scheme (uri "http://www.clojure.org/"))
+    "http"
+    => (host (uri "http://www.clojure.org/"))
+    "www.clojure.org"
+
+You can determine whether a URI is absolute with `absolute?`:
+
+    => (absolute? (uri "http://www.clojure.org/"))
+    true
+    => (absolute? (uri "clojure/clojure.core.api.html"))
+    false
+
+You can `relativize` or `resolve` a URI:
+
+    => (relativize (uri "http://clojure.org/rationale"))
+
+    => (normalize (uri "docs/../clojure.core.api.html"))
+    #<URI clojure.core.api.html>
 
 ## License
 
