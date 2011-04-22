@@ -1,7 +1,7 @@
 # `uri`
 
 A URI library for Clojure, wrapping the
-[URI](http://download.oracle.com/javase/1.4.2/docs/api/java/net/URI.html) class.
+[java.net.URI](http://download.oracle.com/javase/1.4.2/docs/api/java/net/URI.html) class.
 
 ## Usage
 
