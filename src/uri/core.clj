@@ -1,4 +1,50 @@
 (ns uri.core
+  "The main namespace for the clojure URI library.   
+
+  You can create a URI with:
+
+  => (uri \"http://clojure.org/\")
+  #<URI http://clojure.org/>
+  (uri \"http\" \"clojure.github.com\" \"/clojure/clojure.core.api.html\"
+  \"clojure.core/defmulti\")
+  #<URI
+  http://clojure.github.com/clojure/clojure.core.api.html#clojure.core/defmulti>
+
+  The 'getters' all return nil in the case that the attribute does not exist in
+  the URI. Note that a URI lacking a port will return -1 in the java API, but in
+  this library it returns nil, same as the rest of the getters.
+  
+  => (port (uri \"http://localhost:8080\"))
+  8080
+  => (port (uri \"http://clojure.org/\"))
+  nil
+
+  The remaining 'getters' are: authority, fragment, host, path, query, scheme,
+  ssp (scheme-specific part), user-info, raw-authority, raw-fragment, raw-path,
+  raw-query, raw-ssp, and raw-user-info.
+  
+  There are two predicates: absolute? and opaque?.
+  
+  => (absolute? (uri \"http://clojure.org/\"))
+  true
+  => (absolute? (uri \"clojure/clojure.core.api.html\"))
+  false
+  
+  There are three functions to modify URIs: normalize, resolve, and relativize.
+  See the java.net.URI doc for more information about their operation.
+  
+  => (normalize (uri \"docs/../clojure.core.api.html\"))
+  #<URI clojure.core.api.html>
+  => (resolve (uri \"http://clojure.org/\") (uri \"docs/clojure.core.api.html\"))
+  #<URI http://clojure.org/docs/clojure.core.api.html>
+  => (relativize (uri \"http://clojure.org/\")
+                 (uri \"http://clojure.org/docs/clojure.core.api.html\"))
+  #<URI docs/clojure.core.api.html>
+  
+  You can also generate a URL object from a URI using url.
+  
+  => (url (uri \"http://clojure.org/\"))
+  #<URL http://clojure.org/>"
   (:refer-clojure :exclude [resolve])
   (:import (java.net URI)))
 
@@ -34,13 +80,13 @@
 (defn relativize 
   "Relativizes the base URI against the relative URI."
   [#^URI base #^URI rel]
-  (.relativize base given))
+  (.relativize base rel))
 
 (defn resolve 
   "Resolves the given URI against the relative URI. Also takes a string as the
   second argument."
   [#^URI base rel]
-  (.resolve base given))
+  (.resolve base rel))
 
 (defn parse-server-authority 
   "Attempts to parse the URI's authority component, if defined, into
@@ -76,7 +122,10 @@
 (defn port 
   "Returns the port number of the URI."
   [#^URI uri]
-  (.getPort uri))
+  (let [port (.getPort uri)]
+    (if-not (= -1 port)
+      port
+      nil)))
 
 (defn query 
   "Returns the decoded query component of the URI."
