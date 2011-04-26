@@ -46,7 +46,8 @@
   => (url (uri \"http://clojure.org/\"))
   #<URL http://clojure.org/>"
   (:refer-clojure :exclude [resolve])
-  (:import (java.net URI)))
+  (:import (java.net URI))
+  (:require [clojure.string :as s]))
 
 (defn uri
   "Constructs a uri from the given components. See the java.net.URI doc."
@@ -61,6 +62,11 @@
    (URI. scheme host path fragment))
   ([#^String scheme #^String authority #^String path #^String query #^String fragment]
    (URI. scheme authority path query fragment)))
+
+(defn parent
+  "Returns a uri of the parent of the URI."
+  [#^URI uri]
+  (str (s/join "/" (butlast (s/split (str uri) #"/"))) "/"))
 
 (defn absolute?
   "Tells whether or not the URI is absolute." 
