@@ -69,9 +69,9 @@ You can swap between URIs and clojure maps:
 
 v1.1.0
 
-Bumped clojure version from 1.2.0 to 1.2.1.
-Changed the constructor name from `uri` to `make`.
-Added `uri->map` and `map->uri` to ease creating and dissecting uris.
+- Bumped clojure version from 1.2.0 to 1.2.1.
+- Changed the constructor name from `uri` to `make`.
+- Added `uri->map` and `map->uri` to ease creating and dissecting uris.
 
 ## Contributors
 
