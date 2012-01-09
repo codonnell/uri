@@ -73,25 +73,6 @@
         (map (fn [p] (vector (keyword (first p)) (second p)))
              (map (fn [s] (map url-decode (s/split s #"=")))
                   (s/split str #"&")))))
-(defn uri->map
-  "Returns a map of URI parts, optionally form-url-decoding the query string to a map"
-  ([uri] (uri->map uri false))
-  ([uri form-url-decode-query?]
-     (let [uri-map
-           (reduce (fn [m [key getter]]
-                     (assoc m key (getter uri)))
-                   {}
-                   {:scheme scheme
-                    :user-info user-info
-                    :host host
-                    :port port
-                    :path path
-                    :query query
-                    :fragment fragment})]
-       (if (and (:query uri-map) form-url-decode-query?)
-         (assoc uri-map :query (form-url-decode (:query uri-map)))
-         uri-map))))
-
 (defn- format* [str a b]
   (if a (format str b a) b))
 
@@ -245,3 +226,22 @@ doc. Alternatively, a map can be passed which will be passed on to map->uri."
   "Returns the raw user-information part of the URI."
   [#^URI uri]
   (.getRawUserInfo uri))
+
+(defn uri->map
+  "Returns a map of URI parts, optionally form-url-decoding the query string to a map"
+  ([uri] (uri->map uri false))
+  ([uri form-url-decode-query?]
+     (let [uri-map
+           (reduce (fn [m [key getter]]
+                     (assoc m key (getter uri)))
+                   {}
+                   {:scheme scheme
+                    :user-info user-info
+                    :host host
+                    :port port
+                    :path path
+                    :query query
+                    :fragment fragment})]
+       (if (and (:query uri-map) form-url-decode-query?)
+         (assoc uri-map :query (form-url-decode (:query uri-map)))
+         uri-map))))
