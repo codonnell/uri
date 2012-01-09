@@ -46,22 +46,85 @@
   => (url (uri \"http://clojure.org/\"))
   #<URL http://clojure.org/>"
   (:refer-clojure :exclude [resolve])
-  (:import (java.net URI))
+  (:import (java.net URI URLEncoder URLDecoder))
   (:require [clojure.string :as s]))
 
+(defn url-encode
+  "Returns an URL encoded representation of its argument"
+  [arg]
+  (URLEncoder/encode (str arg) "UTF-8"))
+
+(defn form-url-encode [arg]
+  "Returns application/x-www-form-urlencoded representation of a map"
+  (s/join \& (map (fn [[k v]]
+                    (if (vector? v)
+                      (form-url-encode (map (fn [v] [k v]) v))
+                      (str (url-encode (name k))
+                           \=
+                           (url-encode v))))
+                  arg)))
+
+(defn url-decode [arg]
+  "Returns URL decoded representation of its argument"
+  (URLDecoder/decode arg "UTF-8"))
+
+(defn form-url-decode [str]
+  (into {}
+        (map (fn [p] (vector (keyword (first p)) (second p)))
+             (map (fn [s] (map url-decode (s/split s #"=")))
+                  (s/split str #"&")))))
+(defn uri->map
+  "Returns a map of URI parts, optionally form-url-decoding the query string to a map"
+  ([uri] (uri->map uri false))
+  ([uri form-url-decode-query?]
+     (let [uri-map
+           (reduce (fn [m [key getter]]
+                     (assoc m key (getter uri)))
+                   {}
+                   {:scheme scheme
+                    :user-info user-info
+                    :host host
+                    :port port
+                    :path path
+                    :query query
+                    :fragment fragment})]
+       (if (and (:query uri-map) form-url-decode-query?)
+         (assoc uri-map :query (form-url-decode (:query uri-map)))
+         uri-map))))
+
+(defn- format* [str a b]
+  (if a (format str b a) b))
+
+(defn map->uri [{:keys [scheme user-info host port path fragment query]}]
+  "Constructs a uri from a map"
+  (->> (format* "%2$s://%1$s" scheme "")
+       (format* "%s%s@" user-info)
+       (format* "%s%s" host)
+       (format* "%s:%d" (and (not (= -1 port)) port))
+       (format* "%s%s" path)
+       (format* "%s?%s" (and query
+                             (if (map? query)
+                               (form-url-encode query)
+                               query)))
+       (format* "%s#%s" fragment)
+       URI.))
+
 (defn uri
-  "Constructs a uri from the given components. See the java.net.URI doc."
-  ([#^String str-uri]
-   (URI. str-uri))
+  "Constructs a uri from the given components. See the java.net.URI
+doc. Alternatively, a map can be passed which will be passed on to map->uri."
+  ([str-or-map]
+     (if (string? str-or-map)
+       (URI. #^String str-or-map)
+       (map->uri str-or-map)))
   ([#^String scheme #^String ssp #^String fragment]
-   (URI. scheme ssp fragment))
+     (URI. scheme ssp fragment))
   ([#^String scheme #^String user-info #^String host #^Integer port 
     #^String path #^String query #^String fragment]
-   (URI. scheme user-info host port path query fragment))
+     (URI. scheme user-info host port path query fragment))
   ([#^String scheme #^String host #^String path #^String fragment]
-   (URI. scheme host path fragment))
+     (URI. scheme host path fragment))
   ([#^String scheme #^String authority #^String path #^String query #^String fragment]
-   (URI. scheme authority path query fragment)))
+     (URI. scheme authority path query fragment)))
 
 (defn parent
   "Returns a uri of the parent of the URI."

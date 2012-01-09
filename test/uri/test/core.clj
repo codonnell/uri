@@ -7,14 +7,25 @@
 (def test-uri1a (uri "foo" "bar" "baz" 8000 "/foo" "bar=baz" "frag"))
 (def test-uri1b (uri "foo" "bar@baz:8000" "/foo" "bar=baz" "frag"))
 (def test-uri1c (uri "foo" "//bar@baz:8000/foo?bar=baz" "frag"))
+(def test-uri1d (uri {:scheme "foo"
+                      :user-info "bar"
+                      :host "baz"
+                      :port 8000
+                      :path "/foo"
+                      :query {:bar "baz"}
+                      :fragment "frag"}))
 
 (def test-uri2 (uri "foo://bar/baz#frag"))
 (def test-uri2a (uri "foo" "bar" "/baz" "frag"))
 (def test-uri2b (uri "foo" "//bar/baz" "frag"))
+(def test-uri2c (uri {:scheme "foo"
+                      :host "bar"
+                      :path "/baz"
+                      :fragment "frag"}))
 
 (deftest constructor-test
-  (is (= test-uri1 test-uri1a test-uri1b test-uri1c))
-  (is (= test-uri2 test-uri2a test-uri2b)))
+  (is (= test-uri1 test-uri1a test-uri1b test-uri1c test-uri1d))
+  (is (= test-uri2 test-uri2a test-uri2b test-uri2c)))
 
 (deftest getter-test
   (is (= (scheme test-uri1) "foo"))
@@ -53,3 +64,21 @@
   (is (not (opaque? test-uri5b)))
   (is (absolute? test-uri5c))
   (is (not (absolute? test-uri5d))))
+
+(deftest uri->map-test
+  (is (= (uri->map test-uri1 true)
+         {:scheme "foo"
+          :user-info "bar"
+          :host "baz"
+          :port 8000
+          :path "/foo"
+          :query {:bar "baz"}
+          :fragment "frag"}))
+  (is (= (uri->map test-uri2)
+         {:scheme "foo"
+          :user-info nil
+          :host "bar"
+          :port nil
+          :path "/baz"
+          :query nil
+          :fragment "frag"})))
