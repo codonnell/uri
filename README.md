@@ -56,6 +56,27 @@ You can create a URL from a URI:
     => (url (make "http://clojure.org/"))
     #<URL http://clojure.org/>
 
+You can swap between URIs and clojure maps:
+
+    => (uri->map (make "foo://bar@baz:8000/foo?bar=baz#frag"))
+    {:fragment "frag", :query "bar=baz", :path "/foo", :port 8000, :host "baz",
+    :user-info "bar", :scheme "foo"}
+    => (map->uri {:fragment "frag", :query "bar=baz", :path "/foo", :port 8000,
+    :host "baz", :user-info "bar", :scheme "foo"})
+    #<URI foo://bar@baz:8000/foo?bar=baz#frag>
+
+## Changelist
+
+v1.1.0
+
+Bumped clojure version from 1.2.0 to 1.2.1.
+Changed the constructor name from `uri` to `make`.
+Added `uri->map` and `map->uri` to ease creating and dissecting uris.
+
+## Contributors
+
+DerGuteMoritz
+
 ## License
 
 Copyright (C) 2011 Chris O'Donnell

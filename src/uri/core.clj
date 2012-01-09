@@ -44,7 +44,17 @@
   You can also generate a URL object from a URI using url.
   
   => (url (make \"http://clojure.org/\"))
-  #<URL http://clojure.org/>"
+  #<URL http://clojure.org/>
+
+  You can swap between URIs and clojure maps:
+
+  => (uri->map (make \"foo://bar@baz:8000/foo?bar=baz#frag\"))
+  {:fragment \"frag\", :query \"bar=baz\", :path \"/foo\", :port 8000, :host
+  \"baz\", :user-info \"bar\", :scheme \"foo\"}
+  => (map->uri {:fragment \"frag\", :query \"bar=baz\", :path \"/foo\", :port
+  8000, :host \"baz\", :user-info \"bar\", :scheme \"foo\"})
+  #<URI foo://bar@baz:8000/foo?bar=baz#frag>"
+
   (:refer-clojure :exclude [resolve])
   (:import (java.net URI URLEncoder URLDecoder))
   (:require [clojure.string :as s]))
