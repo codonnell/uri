@@ -7,20 +7,20 @@ A URI library for Clojure, wrapping the
 
 Create a URI with:
 
-    => (uri "http://clojure.org/")
+    => (make "http://clojure.org/")
     #<URI http://clojure.org/>
 
 You can also create URIs by passing in specific attributes. 
 
-    => (uri "http" "clojure.github.com" "/clojure/clojure.core.api.html"
+    => (make "http" "clojure.github.com" "/clojure/clojure.core.api.html"
     "clojure.core/defmulti")
     #<URI http://clojure.github.com/clojure/clojure.core.api.html#clojure.core/defmulti>
 
 You can get individual attributes from URIs:
 
-    => (scheme (uri "http://clojure.org/"))
+    => (scheme (make "http://clojure.org/"))
     "http"
-    => (host (uri "http://clojure.org/"))
+    => (host (make "http://clojure.org/"))
     "clojure.org"
 
 If a URI does not contain a particular attribute, they return nil. Note that
@@ -29,31 +29,31 @@ this is different from the java library, which returns -1 for a missing port.
 You can determine whether a URI is absolute with `absolute?` or opaque with
 `opaque?`:
 
-    => (absolute? (uri "http://clojure.org/"))
+    => (absolute? (make "http://clojure.org/"))
     true
-    => (absolute? (uri "clojure/clojure.core.api.html"))
+    => (absolute? (make "clojure/clojure.core.api.html"))
     false
-    => (opaque? (uri "mailto:java-net@java.sun.com"))
+    => (opaque? (make "mailto:java-net@java.sun.com"))
     true
-    => (opaque? (uri "http://clojure.org/"))
+    => (opaque? (make "http://clojure.org/"))
     false
 
 You can `normalize` a URI:
 
-    => (normalize (uri "docs/../clojure.core.api.html"))
+    => (normalize (make "docs/../clojure.core.api.html"))
     #<URI clojure.core.api.html>
 
 You can `resolve` or `relativize` a URI (see the [javadoc](http://download.oracle.com/javase/1.4.2/docs/api/java/net/URI.html)):
 
-    => (resolve (uri "http://clojure.org/") (uri "docs/clojure.core.api.html"))
+    => (resolve (make "http://clojure.org/") (make "docs/clojure.core.api.html"))
     #<URI http://clojure.org/docs/clojure.core.api.html>
-    => (relativize (uri "http://clojure.org/")
-                   (uri "http://clojure.org/docs/clojure.core.api.html"))
+    => (relativize (make "http://clojure.org/")
+                   (make "http://clojure.org/docs/clojure.core.api.html"))
     #<URI docs/clojure.core.api.html>
 
 You can create a URL from a URI:
 
-    => (url (uri "http://clojure.org/"))
+    => (url (make "http://clojure.org/"))
     #<URL http://clojure.org/>
 
 ## License

@@ -3,9 +3,9 @@
 
   You can create a URI with:
 
-  => (uri \"http://clojure.org/\")
+  => (make \"http://clojure.org/\")
   #<URI http://clojure.org/>
-  (uri \"http\" \"clojure.github.com\" \"/clojure/clojure.core.api.html\"
+  (make \"http\" \"clojure.github.com\" \"/clojure/clojure.core.api.html\"
   \"clojure.core/defmulti\")
   #<URI
   http://clojure.github.com/clojure/clojure.core.api.html#clojure.core/defmulti>
@@ -14,9 +14,9 @@
   the URI. Note that a URI lacking a port will return -1 in the java API, but in
   this library it returns nil, same as the rest of the getters.
   
-  => (port (uri \"http://localhost:8080\"))
+  => (port (make \"http://localhost:8080\"))
   8080
-  => (port (uri \"http://clojure.org/\"))
+  => (port (make \"http://clojure.org/\"))
   nil
 
   The remaining 'getters' are: authority, fragment, host, path, query, scheme,
@@ -25,25 +25,25 @@
   
   There are two predicates: absolute? and opaque?.
   
-  => (absolute? (uri \"http://clojure.org/\"))
+  => (absolute? (make \"http://clojure.org/\"))
   true
-  => (absolute? (uri \"clojure/clojure.core.api.html\"))
+  => (absolute? (make \"clojure/clojure.core.api.html\"))
   false
   
   There are three functions to modify URIs: normalize, resolve, and relativize.
   See the java.net.URI doc for more information about their operation.
   
-  => (normalize (uri \"docs/../clojure.core.api.html\"))
+  => (normalize (make \"docs/../clojure.core.api.html\"))
   #<URI clojure.core.api.html>
-  => (resolve (uri \"http://clojure.org/\") (uri \"docs/clojure.core.api.html\"))
+  => (resolve (make \"http://clojure.org/\") (make \"docs/clojure.core.api.html\"))
   #<URI http://clojure.org/docs/clojure.core.api.html>
-  => (relativize (uri \"http://clojure.org/\")
-                 (uri \"http://clojure.org/docs/clojure.core.api.html\"))
+  => (relativize (make \"http://clojure.org/\")
+                 (make \"http://clojure.org/docs/clojure.core.api.html\"))
   #<URI docs/clojure.core.api.html>
   
   You can also generate a URL object from a URI using url.
   
-  => (url (uri \"http://clojure.org/\"))
+  => (url (make \"http://clojure.org/\"))
   #<URL http://clojure.org/>"
   (:refer-clojure :exclude [resolve])
   (:import (java.net URI URLEncoder URLDecoder))
@@ -90,7 +90,7 @@
        (format* "%s#%s" fragment)
        URI.))
 
-(defn uri
+(defn make
   "Constructs a uri from the given components. See the java.net.URI
 doc. Alternatively, a map can be passed which will be passed on to map->uri."
   ([str-or-map]

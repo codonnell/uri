@@ -3,11 +3,11 @@
   (:use [uri.core] :reload)
   (:use [clojure.test]))
 
-(def test-uri1 (uri "foo://bar@baz:8000/foo?bar=baz#frag"))
-(def test-uri1a (uri "foo" "bar" "baz" 8000 "/foo" "bar=baz" "frag"))
-(def test-uri1b (uri "foo" "bar@baz:8000" "/foo" "bar=baz" "frag"))
-(def test-uri1c (uri "foo" "//bar@baz:8000/foo?bar=baz" "frag"))
-(def test-uri1d (uri {:scheme "foo"
+(def test-uri1 (make "foo://bar@baz:8000/foo?bar=baz#frag"))
+(def test-uri1a (make "foo" "bar" "baz" 8000 "/foo" "bar=baz" "frag"))
+(def test-uri1b (make "foo" "bar@baz:8000" "/foo" "bar=baz" "frag"))
+(def test-uri1c (make "foo" "//bar@baz:8000/foo?bar=baz" "frag"))
+(def test-uri1d (make {:scheme "foo"
                       :user-info "bar"
                       :host "baz"
                       :port 8000
@@ -15,10 +15,10 @@
                       :query {:bar "baz"}
                       :fragment "frag"}))
 
-(def test-uri2 (uri "foo://bar/baz#frag"))
-(def test-uri2a (uri "foo" "bar" "/baz" "frag"))
-(def test-uri2b (uri "foo" "//bar/baz" "frag"))
-(def test-uri2c (uri {:scheme "foo"
+(def test-uri2 (make "foo://bar/baz#frag"))
+(def test-uri2a (make "foo" "bar" "/baz" "frag"))
+(def test-uri2b (make "foo" "//bar/baz" "frag"))
+(def test-uri2c (make {:scheme "foo"
                       :host "bar"
                       :path "/baz"
                       :fragment "frag"}))
@@ -37,27 +37,27 @@
   (is (= (fragment test-uri1) "frag"))
   (is (= (authority test-uri1) "bar@baz:8000")))
 
-(def test-uri3a (uri "../foo/../bar/baz"))
-(def test-uri3b (uri "../bar/baz"))
-(def test-uri3c (uri "foo/./"))
-(def test-uri3d (uri "foo/"))
+(def test-uri3a (make "../foo/../bar/baz"))
+(def test-uri3b (make "../bar/baz"))
+(def test-uri3c (make "foo/./"))
+(def test-uri3d (make "foo/"))
 
 (deftest normalize-test
   (is (= (normalize test-uri3a) test-uri3b))
   (is (= (normalize test-uri3c) test-uri3d)))
 
-(def test-uri4 (uri "/foo/bar/baz.txt"))
-(def test-uri4a (uri "/foo/"))
-(def test-uri4b (uri "bar/baz.txt"))
+(def test-uri4 (make "/foo/bar/baz.txt"))
+(def test-uri4a (make "/foo/"))
+(def test-uri4b (make "bar/baz.txt"))
 
 (deftest relativize-resolve-test
   (is (= (relativize test-uri4a test-uri4) test-uri4b))
   (is (= (resolve test-uri4a test-uri4b) test-uri4)))
 
-(def test-uri5a (uri "news:comp.lang.lisp"))
-(def test-uri5b (uri "bar/baz.txt"))
-(def test-uri5c (uri "foo://bar.baz"))
-(def test-uri5d (uri "foo/bar.baz"))
+(def test-uri5a (make "news:comp.lang.lisp"))
+(def test-uri5b (make "bar/baz.txt"))
+(def test-uri5c (make "foo://bar.baz"))
+(def test-uri5d (make "foo/bar.baz"))
 
 (deftest predicates-test
   (is (opaque? test-uri5a))
