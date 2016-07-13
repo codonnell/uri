@@ -1,7 +1,7 @@
-(ns uri.test.core
+(ns uri.test.core-test
   (:refer-clojure :exclude [resolve])
-  (:use [uri.core] :reload)
-  (:use [clojure.test]))
+  (:require [uri.core :refer :all]
+            [clojure.test :refer [deftest is]]))
 
 (def test-uri1 (make "foo://bar@baz:8000/foo?bar=baz#frag"))
 (def test-uri1a (make "foo" "bar" "baz" 8000 "/foo" "bar=baz" "frag"))
