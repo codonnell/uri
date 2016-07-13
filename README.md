@@ -67,6 +67,10 @@ You can swap between URIs and clojure maps:
 
 ## Changelist
 
+v1.2.0
+
+- Bumped clojure version from 1.2.0 to 1.8.0.
+
 v1.1.0
 
 - Bumped clojure version from 1.2.0 to 1.2.1.
